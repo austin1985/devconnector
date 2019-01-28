@@ -4,6 +4,8 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys');
+const passport = require('passport');
+
 
 //Load user model
 const User = require('../../models/User');
@@ -16,7 +18,7 @@ router.get('/test', (req, res) => res.json({ msg: "Users Works" }))
 // @route   POST api/users/register
 // @desc    Register user
 // @access  Public
-router.post('/register', (req, res) =>  {
+router.post('/register', (req, res) => {
     User.findOne({ email: req.body.email })
         .then(user => {
             if (user) {
@@ -74,13 +76,13 @@ router.post('/login', (req, res) => {
                         jwt.sign(
                             payload,
                             keys.secretOrKey,
-                            {expiresIn: 3600 },
+                            { expiresIn: 3600 },
                             (err, token) => {
                                 res.json({
-                                    success:true,
+                                    success: true,
                                     token: 'Bearer ' + token
                                 })
-                        });
+                            });
                     } else {
                         return res.status(400).json({ password: 'Password incorrect' })
                     }
@@ -88,5 +90,17 @@ router.post('/login', (req, res) => {
 
         })
 })
+
+
+// @route   GET api/users/current
+// @desc    Returning current user
+// @access  Private
+router.get('/current', passport.authenticate('jwt', { session: false }), (req,res)=>{
+    res.json({
+        id:req.user.id,
+        name:req.user.name,
+        email:req.user.email
+    });
+});
 
 module.exports = router
