@@ -221,6 +221,7 @@ router.post('/education', passport.authenticate('jwt', {session:false}),(req,res
                 from: req.body.from,
                 to: req.body.to,
                 current: req.body.current,
+                description:req.body.description
             }
 
             //Add to experience array

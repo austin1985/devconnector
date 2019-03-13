@@ -21,7 +21,9 @@ class ProfileGithub extends Component {
 		fetch(`https://api.github.com/users/${username}/repos?per_page=${count}&sort=${sort}&client_id=clientId=${clientId}&client_secret=${clientSecret}`)
 			.then(res => res.json())
 			.then(data => {
-				this.setState({ repos: data })
+				if(this.refs.myRef){
+					this.setState({ repos: data })
+				}
 			})
 			.catch(err => console.log(err))
 	}
@@ -35,7 +37,7 @@ class ProfileGithub extends Component {
 				<div className="row">
 					<div className="col-md-6">
 						<h4>
-							<a href={repo.html_url} className="text-info" target="_blank">
+							<a href={repo.html_url} className="text-info" target="_blank" rel="noopener noreferrer">
 								{repo.name}
 							</a>
 						</h4>
@@ -43,13 +45,13 @@ class ProfileGithub extends Component {
 					</div>
 					<div className="col-md-6">
 						<span className="badge badge-info mr-1">
-							Stars: {repo.stargazers_count}
+							Stars: {repo.stargazers_count} <i className="fa fa-star"/>
 						</span>
 						<span className="badge badge-secondary mr-1">
-							Watchers: {repo.watchers_count}
+							Watchers: {repo.watchers_count} <i className="fa fa-eye"/>
 						</span>
 						<span className="badge badge-success">
-							Forks: {repo.forks_count}
+							Forks: {repo.forks_count} <i className="fa fa-code-branch"/>
 						</span>
 					</div>
 				</div>
@@ -57,7 +59,7 @@ class ProfileGithub extends Component {
 		))
 
 		return (
-			<div>
+			<div ref="myRef">
 				<hr />
 				<h3 className="mb-4">Latest Github Repos</h3>
 				{repoItems}
